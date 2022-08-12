@@ -1,5 +1,6 @@
 package ru.geekbrains;
 
+import ru.geekbrains.domain.HttpRequest;
 import ru.geekbrains.service.FileService;
 import ru.geekbrains.service.SocketService;
 
@@ -12,6 +13,7 @@ public class RequestHandler implements Runnable {
 
     private final FileService fileService;
 
+
     public RequestHandler(SocketService socketService, FileService fileService) {
         this.socketService = socketService;
         this.fileService = fileService;
@@ -20,25 +22,13 @@ public class RequestHandler implements Runnable {
     @Override
     public void run() {
         Deque<String> rawRequest = socketService.readRequest();
-        String firstLine = rawRequest.pollFirst();
-        String[] parts = firstLine.split(" ");
-
-        if (!fileService.exists(parts[1])) {
-            String rawResponse =
-                    "HTTP/1.1 404 NOT_FOUND\n" +
-                    "Content-Type: text/html; charset=utf-8\n" +
-                    "\n" +
-                    "<h1>Файл не найден!</h1>";
-            socketService.writeResponse(rawResponse);
-            return;
+        HttpRequest httpRequest = new RequestParser().parse(rawRequest);
+        ResponseSerializer responseSerializer = new ResponseSerializer();
+        if (!fileService.exists(httpRequest.getPath())) {
+            socketService.writeResponse(responseSerializer.serialize(new ResponseCreator().createNotFoundResponse()));
         }
-
-        String rawResponse = "HTTP/1.1 200 OK\n" +
-                "Content-Type: text/html; charset=utf-8\n" +
-                "\n" +
-                fileService.readFile(parts[1]);
-        socketService.writeResponse(rawResponse);
-
+        else
+            socketService.writeResponse(responseSerializer.serialize(new ResponseCreator().createOKResponse(fileService.readFile(httpRequest.getPath()))));
         try {
             socketService.close();
         } catch (IOException ex) {
