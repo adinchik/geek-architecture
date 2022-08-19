@@ -6,11 +6,21 @@ public class HttpResponse {
 
     private int statusCode;
 
+    private String statusMessage;
+
     private Map<String, String> headers;
 
     private String body;
 
     public HttpResponse() {
+    }
+
+    public String getStatusMessage() {
+        return statusMessage;
+    }
+
+    public void setStatusMessage(String statusMessage) {
+        this.statusMessage = statusMessage;
     }
 
     public int getStatusCode() {
