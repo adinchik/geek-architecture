@@ -53,4 +53,40 @@ public class HttpRequest {
     public void setBody(String body) {
         this.body = body;
     }
+
+    public static Builder createBuilder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private final HttpRequest httpRequest;
+
+        public Builder() {
+            this.httpRequest = new HttpRequest();
+        }
+
+        public Builder withMethod(String method) {
+            this.httpRequest.method = method;
+            return this;
+        }
+
+        public Builder withPath(String path) {
+            this.httpRequest.path = path;
+            return this;
+        }
+
+        public Builder withHeaders(Map<String, String> headers) {
+            this.httpRequest.headers = headers;
+            return this;
+        }
+
+        public Builder withBody(String body) {
+            this.httpRequest.body = body;
+            return this;
+        }
+
+        public HttpRequest build() {
+            return httpRequest;
+        }
+    }
 }

@@ -46,4 +46,40 @@ public class HttpResponse {
     public void setBody(String body) {
         this.body = body;
     }
+
+    public static Builder createBuilder() {
+        return new HttpResponse.Builder();
+    }
+
+    public static class Builder {
+        private final HttpResponse httpResponse;
+
+        public Builder() {
+            this.httpResponse = new HttpResponse();
+        }
+
+        public Builder withStatusCode(int statusCode) {
+            this.httpResponse.statusCode = statusCode;
+            return this;
+        }
+
+        public Builder withStatusMessage(String statusMessage) {
+            this.httpResponse.statusMessage = statusMessage;
+            return this;
+        }
+
+        public Builder withHeaders(Map<String, String> headers) {
+            this.httpResponse.headers = headers;
+            return this;
+        }
+
+        public Builder withBody(String body) {
+            this.httpResponse.body = body;
+            return this;
+        }
+
+        public HttpResponse build() {
+            return httpResponse;
+        }
+    }
 }
